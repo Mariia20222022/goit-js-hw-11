@@ -21,13 +21,3 @@ async function searchImages(searchQuery, page, perPage) {
   const images = await response.data;
   return images;
 }
-
-// const response = await axios.get(`${BASE_URL}?key=${API_KEY}`, {
-//     params: {
-//       q: searchword,
-//       per_page: 40,
-//       page: page,
-//       image_type: 'photo',
-//       orientation: 'horizontal',
-//       safesearch: true,
-//     },

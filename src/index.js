@@ -16,8 +16,8 @@ let page = 1;
 const lightbox = new SimpleLightbox('.gallery a');
 const perPage = 40;
 function onSearch(event) {
-  gallery.innerHTML = ``;
-  loadMoreButton.classList.add('hidden');
+  event.preventDefault();
+  cleanGallery();
   searchQuery = event.currentTarget.elements.searchQuery.value.trim();
 
   if (searchQuery !== ``) {
@@ -30,7 +30,7 @@ function onSearch(event) {
         }
         renderPhoto(data.hits);
         Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-        // smoothScroll();
+
         lightbox.refresh();
         loadMoreButton.style.display = `block`;
       })
@@ -43,7 +43,7 @@ function onSearch(event) {
 function onLoadMore() {
   page += 1;
   console.log(page);
-  // loadMoreButton.classList.remove(`hidden`);
+
   searchImages(searchQuery, page, perPage).then(data => {
     if (data.totalHits === 0) {
       Notiflix.Notify.failure(
@@ -52,7 +52,6 @@ function onLoadMore() {
     } else {
       renderPhoto(data.hits);
 
-      // alert(`Hooray! We found ${data.totalHits} images.`);
       const totalPages = Math.ceil(data.totalHits / perPage);
       if (page > totalPages) {
         Notiflix.Notify.warning(
@@ -62,9 +61,6 @@ function onLoadMore() {
     }
     loadMoreButton.style.display = 'block';
   });
-  // if (data.total === data.totalHits) {
-
-  // handleNextGroupLoaded();
 }
 
 function renderPhoto(images) {
@@ -97,4 +93,10 @@ function renderPhoto(images) {
     .join('');
 
   gallery.insertAdjacentHTML('beforeend', markup);
+}
+
+function cleanGallery() {
+  gallery.innerHTML = '';
+  page = 1;
+  loadMoreButton.style.display = 'none';
 }
