@@ -9,7 +9,7 @@ const loadMoreButton = document.querySelector(`.load-more `);
 const gallery = document.querySelector(`.gallery`);
 searchForm.addEventListener(`submit`, onSearch);
 loadMoreButton.addEventListener(`click`, onLoadMore);
-// loadMoreButton.style.display = `none`;
+loadMoreButton.style.display = `none`;
 let searchQuery = ``;
 
 let page = 1;
@@ -21,19 +21,22 @@ function onSearch(event) {
   searchQuery = event.currentTarget.elements.searchQuery.value.trim();
 
   if (searchQuery !== ``) {
-    searchImages(searchQuery, page, perPage).then(data => {
-      if (data.totalHits === 0) {
-        Notiflix.Notify.failure(
-          `Sorry, there are no images matching your search query. Please try again.`
-        );
-        loadMoreButton.classList.remove('hidden');
-      }
-      renderPhoto(data.hits);
-      Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-      // smoothScroll();
-      lightbox.refresh();
-      loadMoreButton.classList.remove(``);
-    });
+    searchImages(searchQuery, page, perPage)
+      .then(data => {
+        if (data.totalHits === 0) {
+          Notiflix.Notify.failure(
+            `Sorry, there are no images matching your search query. Please try again.`
+          );
+        }
+        renderPhoto(data.hits);
+        Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+        // smoothScroll();
+        lightbox.refresh();
+        loadMoreButton.style.display = `block`;
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 }
 
@@ -55,7 +58,6 @@ function onLoadMore() {
         Notiflix.Notify.warning(
           `We're sorry, but you've reached the end of search results.`
         );
-        loadMoreButton.classList.remove('hidden');
       }
     }
     loadMoreButton.style.display = 'block';
@@ -96,14 +98,3 @@ function renderPhoto(images) {
 
   gallery.insertAdjacentHTML('beforeend', markup);
 }
-
-// function smoothScroll() {
-//   const { height: cardHeight } = document
-//     .querySelector('.gallery')
-//     .firstElementChild.getBoundingClientRect();
-
-//   window.scrollBy({
-//     top: cardHeight * 2,
-//     behavior: 'smooth',
-//   });
-// }
