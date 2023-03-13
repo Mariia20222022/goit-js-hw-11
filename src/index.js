@@ -9,39 +9,41 @@ const loadMoreButton = document.querySelector(`.load-more `);
 const gallery = document.querySelector(`.gallery`);
 searchForm.addEventListener(`submit`, onSearch);
 loadMoreButton.addEventListener(`click`, onLoadMore);
-loadMoreButton.style.display = `none`;
+// loadMoreButton.style.display = `none`;
 let searchQuery = ``;
 
 let page = 1;
 const lightbox = new SimpleLightbox('.gallery a');
 const perPage = 40;
 function onSearch(event) {
-  event.preventDefault();
   gallery.innerHTML = ``;
+  loadMoreButton.classList.add('hidden');
   searchQuery = event.currentTarget.elements.searchQuery.value.trim();
-  page = 1;
-  //  searchImages(searchQuery, page, perPage)
+
   if (searchQuery !== ``) {
     searchImages(searchQuery, page, perPage).then(data => {
       if (data.totalHits === 0) {
         Notiflix.Notify.failure(
           `Sorry, there are no images matching your search query. Please try again.`
         );
+        loadMoreButton.classList.remove('hidden');
       }
       renderPhoto(data.hits);
       Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+      // smoothScroll();
       lightbox.refresh();
-      loadMoreButton.style.display = `block`;
+      loadMoreButton.classList.remove(``);
     });
   }
 }
 
 function onLoadMore() {
   page += 1;
+  console.log(page);
   // loadMoreButton.classList.remove(`hidden`);
   searchImages(searchQuery, page, perPage).then(data => {
     if (data.totalHits === 0) {
-      alert(
+      Notiflix.Notify.failure(
         `Sorry, there are no images matching your search query. Please try again.`
       );
     } else {
@@ -53,6 +55,7 @@ function onLoadMore() {
         Notiflix.Notify.warning(
           `We're sorry, but you've reached the end of search results.`
         );
+        loadMoreButton.classList.remove('hidden');
       }
     }
     loadMoreButton.style.display = 'block';
@@ -94,7 +97,7 @@ function renderPhoto(images) {
   gallery.insertAdjacentHTML('beforeend', markup);
 }
 
-// function smoothScrollToNextGroup() {
+// function smoothScroll() {
 //   const { height: cardHeight } = document
 //     .querySelector('.gallery')
 //     .firstElementChild.getBoundingClientRect();
@@ -102,11 +105,5 @@ function renderPhoto(images) {
 //   window.scrollBy({
 //     top: cardHeight * 2,
 //     behavior: 'smooth',
-//   });
-// }
-
-// function handleNextGroupLoaded() {
-//   requestAnimationFrame(() => {
-//     smoothScrollToNextGroup();
 //   });
 // }

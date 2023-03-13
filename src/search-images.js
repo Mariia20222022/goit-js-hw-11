@@ -9,7 +9,7 @@ async function searchImages(searchQuery, page, perPage) {
     params: {
       q: searchQuery,
       perPage: 40,
-      // page: page,
+      page: page,
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: true,
