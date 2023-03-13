@@ -27,12 +27,13 @@ function onSearch(event) {
           Notiflix.Notify.failure(
             `Sorry, there are no images matching your search query. Please try again.`
           );
-        }
-        renderPhoto(data.hits);
-        Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+        } else {
+          renderPhoto(data.hits);
+          Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
 
-        lightbox.refresh();
-        loadMoreButton.style.display = `block`;
+          lightbox.refresh();
+          loadMoreButton.style.display = `block`;
+        }
       })
       .catch(error => {
         console.log(error);
@@ -42,7 +43,6 @@ function onSearch(event) {
 
 function onLoadMore() {
   page += 1;
-  console.log(page);
 
   searchImages(searchQuery, page, perPage).then(data => {
     if (data.totalHits === 0) {
@@ -57,9 +57,9 @@ function onLoadMore() {
         Notiflix.Notify.warning(
           `We're sorry, but you've reached the end of search results.`
         );
+        loadMoreButton.style.display = 'block';
       }
     }
-    loadMoreButton.style.display = 'block';
   });
 }
 
